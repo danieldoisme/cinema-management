@@ -4,17 +4,35 @@
  */
 package view;
 
+import dao.MovieDAO;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import model.Movie;
+
 /**
  *
  * @author danieldoisme
  */
 public class SellTicketFrm extends javax.swing.JFrame {
+    
+    private ArrayList<Movie> movies;
 
     /**
      * Creates new form SellTicketFrm
      */
     public SellTicketFrm() {
         initComponents();
+
+        MovieDAO movieDAO = new MovieDAO();
+        ArrayList<Movie> movies = movieDAO.listMovies();
+        this.movies = movieDAO.listMovies();
+
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (Movie movie : this.movies) {
+            model.addElement(movie.getTitle());
+        }
+
+        listMovies.setModel(model);
     }
 
     /**
@@ -42,6 +60,11 @@ public class SellTicketFrm extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        listMovies.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listMoviesValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(listMovies);
 
@@ -81,6 +104,17 @@ public class SellTicketFrm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void listMoviesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listMoviesValueChanged
+        int selectedIndex = listMovies.getSelectedIndex();
+
+        if (selectedIndex != -1) {
+            Movie selectedMovie = this.movies.get(selectedIndex);
+
+            new SelectShowtimeFrm(selectedMovie).setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_listMoviesValueChanged
 
     /**
      * @param args the command line arguments

@@ -31,6 +31,11 @@ public class StaffHomeFrm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnSellTicket.setText("Bán vé xem phim");
+        btnSellTicket.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSellTicketActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -51,6 +56,11 @@ public class StaffHomeFrm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSellTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSellTicketActionPerformed
+        new SellTicketFrm().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnSellTicketActionPerformed
 
     /**
      * @param args the command line arguments

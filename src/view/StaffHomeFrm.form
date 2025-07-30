@@ -45,6 +45,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="B&#xe1;n v&#xe9; xem phim"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSellTicketActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
