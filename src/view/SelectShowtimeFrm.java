@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import model.Movie;
 import model.Showtime;
+import view.SelectSeatFrm;
 
 /**
  *
@@ -33,8 +34,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
         lblSelectedMovie.setText("Suất chiếu cho phim: " + selectedMovie.getTitle());
 
         ShowtimeDAO showtimeDAO = new ShowtimeDAO();
-        this.showtimes = showtimeDAO.searchShowtimeByMovie(selectedMovie.getId());
-        ArrayList<Showtime> showtimes = showtimeDAO.searchShowtimesByMovie(selectedMovie.getId());
+        this.showtimes = showtimeDAO.searchShowtimesByMovie(selectedMovie.getId());
 
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Suất chiếu");

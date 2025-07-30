@@ -11,11 +11,16 @@ import java.util.ArrayList;
 import javax.swing.JToggleButton;
 import model.Seat;
 import model.Showtime;
+import javax.swing.JOptionPane;
+import .AddServiceFrm;
+
+view
 
 /**
  *
  * @author danieldoisme
  */
+
 public class SelectSeatFrm extends javax.swing.JFrame {
 
     private Showtime selectedShowtime;
@@ -88,6 +93,11 @@ public class SelectSeatFrm extends javax.swing.JFrame {
         pnlSeats.setLayout(new java.awt.GridLayout());
 
         btnContinue.setText("Tiếp tục");
+        btnContinue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContinueActionPerformed(evt);
+            }
+        });
 
         btnBack.setText("Quay lại");
 
@@ -124,6 +134,23 @@ public class SelectSeatFrm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
+        ArrayList<Seat> selectedSeats = new ArrayList<>();
+
+        for (int i = 0; i < seatButtons.size(); i++) {
+            if (seatButtons.get(i).isSelected()) {
+                selectedSeats.add(this.seats.get(i));
+            }
+        }
+
+        if (selectedSeats.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất một ghế!");
+        } else {
+            new AddServiceFrm(selectedShowtime, selectedSeats).setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnContinueActionPerformed
 
     /**
      * @param args the command line arguments
