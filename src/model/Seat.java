@@ -6,17 +6,19 @@ public class Seat {
     private String seatRow;
     private int seatNumber;
     private String type;
+    private String status;
 
     private ScreenRoom screenRoom;
 
     public Seat() {
     }
 
-    public Seat(int id, String seatRow, int seatNumber, String type, ScreenRoom screenRoom) {
+    public Seat(int id, String seatRow, int seatNumber, String type, String status, ScreenRoom screenRoom) {
         this.id = id;
         this.seatRow = seatRow;
         this.seatNumber = seatNumber;
         this.type = type;
+        this.status = status;
         this.screenRoom = screenRoom;
     }
 
@@ -50,6 +52,14 @@ public class Seat {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public ScreenRoom getScreenRoom() {

@@ -7,15 +7,17 @@ public class Ticket {
     private float discount;
 
     private Showtime showtime;
+    private Seat seat;
 
     public Ticket() {
     }
 
-    public Ticket(int id, double price, float discount, Showtime showtime) {
+    public Ticket(int id, double price, float discount, Showtime showtime, Seat seat) {
         this.id = id;
         this.price = price;
         this.discount = discount;
         this.showtime = showtime;
+        this.seat = seat;
     }
 
     public int getId() {
@@ -49,4 +51,13 @@ public class Ticket {
     public void setShowtime(Showtime showtime) {
         this.showtime = showtime;
     }
+
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
 }
