@@ -4,17 +4,82 @@
  */
 package view;
 
+import dao.BillDAO;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import model.Bill;
+import model.Employee;
+import model.Seat;
+import model.Showtime;
+import model.Ticket;
+import model.UsedService;
+
 /**
  *
  * @author danieldoisme
  */
 public class ConfirmBillFrm extends javax.swing.JFrame {
 
+    private Bill finalBill = new Bill();
+
     /**
      * Creates new form ConfirmBillFrm
      */
     public ConfirmBillFrm() {
         initComponents();
+    }
+
+    public ConfirmBillFrm(Showtime showtime, ArrayList<Seat> seats, List<UsedService> services) {
+        initComponents();
+
+        // --- 1. Tạo các đối tượng Ticket ---
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        for (Seat seat : seats) {
+            Ticket ticket = new Ticket();
+            ticket.setShowtime(showtime);
+            ticket.setSeat(seat);
+            ticket.setPrice(showtime.getTicketPrice()); // Lấy giá vé từ suất chiếu
+            ticket.setDiscount(0);
+            tickets.add(ticket);
+        }
+
+        // --- 2. Xây dựng đối tượng Bill hoàn chỉnh ---
+        Employee currentEmployee = new Employee(1, "Đỗ Đức Thành", "Nhân viên bán vé");
+
+        finalBill.setEmployee(currentEmployee);
+        finalBill.setCreationDate(new Timestamp(System.currentTimeMillis()));
+        finalBill.setTickets(tickets);
+        finalBill.setUsedServices(services);
+
+        // --- 3. Hiển thị thông tin hóa đơn và tính tổng tiền ---
+        StringBuilder billDetails = new StringBuilder();
+        double totalAmount = 0;
+
+        billDetails.append("--- VÉ XEM PHIM ---\n");
+        for (Ticket t : tickets) {
+            billDetails.append(String.format("Phim: %s - Ghế: %s%d - Giá: %.0f VND\n",
+                    t.getShowtime().getMovie().getTitle(),
+                    t.getSeat().getSeatRow(),
+                    t.getSeat().getSeatNumber(),
+                    t.getPrice()));
+            totalAmount += t.getPrice();
+        }
+
+        if (!services.isEmpty()) {
+            billDetails.append("\n--- DỊCH VỤ ĂN UỐNG ---\n");
+            for (UsedService us : services) {
+                billDetails.append(String.format("%s - SL: %d - Thành tiền: %.0f VND\n",
+                        us.getService().getName(),
+                        us.getAmount(),
+                        us.getPrice()));
+                totalAmount += us.getPrice();
+            }
+        }
+
+        txtBillDetails.setText(billDetails.toString());
+        lblTotal.setText(String.format("TỔNG CỘNG: %.0f VND", totalAmount));
     }
 
     /**
@@ -26,21 +91,70 @@ public class ConfirmBillFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtBillDetails = new javax.swing.JTextArea();
+        lblTotal = new javax.swing.JLabel();
+        btnConfirm = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        txtBillDetails.setColumns(20);
+        txtBillDetails.setRows(5);
+        jScrollPane1.setViewportView(txtBillDetails);
+
+        lblTotal.setText("jLabel1");
+
+        btnConfirm.setText("Thanh toán");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(160, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTotal)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnConfirm))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTotal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnConfirm)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        BillDAO billDAO = new BillDAO();
+        boolean success = billDAO.addBill(this.finalBill);
+
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Thanh toán thành công! Đang in vé và hóa đơn.");
+            // Quay về màn hình chính
+            new StaffHomeFrm().setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thanh toán thất bại! Có lỗi xảy ra với CSDL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnConfirmActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +192,9 @@ public class ConfirmBillFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirm;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblTotal;
+    private javax.swing.JTextArea txtBillDetails;
     // End of variables declaration//GEN-END:variables
 }

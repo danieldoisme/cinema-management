@@ -4,17 +4,55 @@
  */
 package view;
 
+import dao.ServiceDAO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Seat;
+import model.Service;
+import model.Showtime;
+import model.UsedService;
+
 /**
  *
  * @author danieldoisme
  */
 public class AddServiceFrm extends javax.swing.JFrame {
 
+    private Showtime selectedShowtime;
+    private ArrayList<Seat> selectedSeats;
+    private ArrayList<Service> services;
+
     /**
      * Creates new form AddServiceFrm
      */
     public AddServiceFrm() {
         initComponents();
+    }
+
+    public AddServiceFrm(Showtime showtime, ArrayList<Seat> seats) {
+        initComponents();
+        this.selectedShowtime = showtime;
+        this.selectedSeats = seats;
+
+        ServiceDAO serviceDAO = new ServiceDAO();
+        this.services = serviceDAO.listServices();
+
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 2;
+            }
+        };
+        model.addColumn("Tên Dịch Vụ");
+        model.addColumn("Đơn Giá");
+        model.addColumn("Số Lượng");
+
+        for (Service s : this.services) {
+            model.addRow(new Object[]{s.getName(), s.getServicePrice(), 0});
+        }
+        tblServices.setModel(model);
     }
 
     /**
@@ -26,21 +64,100 @@ public class AddServiceFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblServices = new javax.swing.JTable();
+        btnAdd = new javax.swing.JButton();
+        btnSkip = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        tblServices.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblServices);
+
+        btnAdd.setText("Thêm vào hóa đơn");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnSkip.setText("Bỏ qua");
+        btnSkip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSkipActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSkip)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAdd))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdd)
+                    .addComponent(btnSkip))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        List<UsedService> usedServices = new ArrayList<>();
+        DefaultTableModel model = (DefaultTableModel) tblServices.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            try {
+                int quantity = Integer.parseInt(model.getValueAt(i, 2).toString());
+                if (quantity > 0) {
+                    Service service = this.services.get(i);
+                    UsedService used = new UsedService();
+                    used.setService(service);
+                    used.setAmount(quantity);
+                    used.setPrice(service.getServicePrice() * quantity);
+                    used.setDiscount(0);
+                    usedServices.add(used);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Số lượng phải là một con số!");
+                return;
+            }
+        }
+
+        // Mở màn hình xác nhận hóa đơn
+        new ConfirmBillFrm(selectedShowtime, selectedSeats, usedServices).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnSkipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkipActionPerformed
+        new ConfirmBillFrm(selectedShowtime, selectedSeats, new ArrayList<>()).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnSkipActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +195,9 @@ public class AddServiceFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnSkip;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblServices;
     // End of variables declaration//GEN-END:variables
 }

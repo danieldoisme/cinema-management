@@ -12,15 +12,12 @@ import javax.swing.JToggleButton;
 import model.Seat;
 import model.Showtime;
 import javax.swing.JOptionPane;
-import .AddServiceFrm;
-
-view
+import view.AddServiceFrm;
 
 /**
  *
  * @author danieldoisme
  */
-
 public class SelectSeatFrm extends javax.swing.JFrame {
 
     private Showtime selectedShowtime;
