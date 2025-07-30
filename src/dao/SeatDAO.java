@@ -13,7 +13,7 @@ public class SeatDAO extends DAO {
 
     public ArrayList<Seat> getSeatsByShowtime(int screenRoomID, int showtimeID) {
         ArrayList<Seat> result = new ArrayList<>();
-        String sql = "SELECT s.ID, s.row, s.number, s.type, "
+        String sql = "SELECT s.ID, s.seatRow, s.seatNumber, s.type, "
                 + "CASE WHEN t.ID IS NULL THEN 'available' ELSE 'taken' END as status "
                 + "FROM tblSeat s "
                 + "LEFT JOIN tblTicket t ON s.ID = t.seatID AND t.showtimeID = ? "
