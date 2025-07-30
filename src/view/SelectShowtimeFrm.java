@@ -17,10 +17,15 @@ import model.Showtime;
 public class SelectShowtimeFrm extends javax.swing.JFrame {
 
     private Movie selectedMovie;
+    private ArrayList<Showtime> showtimes;
 
     /**
      * Creates new form SelectShowtimeFrm
      */
+    private SelectShowtimeFrm() {
+        initComponents();
+    }
+
     public SelectShowtimeFrm(Movie movie) {
         initComponents();
         this.selectedMovie = movie;
@@ -28,6 +33,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
         lblSelectedMovie.setText("Suất chiếu cho phim: " + selectedMovie.getTitle());
 
         ShowtimeDAO showtimeDAO = new ShowtimeDAO();
+        this.showtimes = showtimeDAO.searchShowtimeByMovie(selectedMovie.getId());
         ArrayList<Showtime> showtimes = showtimeDAO.searchShowtimesByMovie(selectedMovie.getId());
 
         DefaultTableModel model = new DefaultTableModel();
@@ -36,7 +42,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
         model.addColumn("Giờ chiếu");
         model.addColumn("Giá vé");
 
-        for (Showtime st : showtimes) {
+        for (Showtime st : this.showtimes) {
             model.addRow(new Object[]{st.getId(), st.getScreenRoom().getRoomCode(), st.getShowTime(), st.getTicketPrice()});
         }
 
@@ -91,20 +97,16 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(150, 150, 150)
-                                .addComponent(lblSelectedMovie))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 13, Short.MAX_VALUE))
+                        .addGap(150, 150, 150)
+                        .addComponent(lblSelectedMovie)
+                        .addGap(0, 147, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btnBack)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSelectThisShowtime)))
                 .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -124,7 +126,16 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSelectThisShowtimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectThisShowtimeActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblShowtimes.getSelectedRow();
+
+        if (selectedRow != -1) {
+            Showtime selectedShowtime = this.showtimes.get(selectedRow);
+
+            new SelectSeatFrm(selectedShowtime).setVisible(true);
+            this.dispose();
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn một suất chiếu!");
+        }
     }//GEN-LAST:event_btnSelectThisShowtimeActionPerformed
 
     /**
