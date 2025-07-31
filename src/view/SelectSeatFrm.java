@@ -87,7 +87,7 @@ public class SelectSeatFrm extends javax.swing.JFrame {
 
         jLabel1.setText("MÀN HÌNH");
 
-        pnlSeats.setLayout(new java.awt.GridLayout());
+        pnlSeats.setLayout(new java.awt.GridLayout(1, 0));
 
         btnContinue.setText("Tiếp tục");
         btnContinue.addActionListener(new java.awt.event.ActionListener() {
@@ -113,7 +113,7 @@ public class SelectSeatFrm extends javax.swing.JFrame {
                 .addComponent(btnBack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnContinue)
-                .addGap(21, 21, 21))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

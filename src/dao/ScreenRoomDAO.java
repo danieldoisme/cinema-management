@@ -27,9 +27,6 @@ public class ScreenRoomDAO extends DAO {
                 sr.setSeatCount(rs.getInt("seatCount"));
                 sr.setType(rs.getString("type"));
 
-                // CinemaDAO cDAO = new CinemaDAO();
-                // Cinema cinema = cDAO.getCinemaByID(rs.getInt("cinemaID"));
-                // sr.setCinema(cinema);
                 result.add(sr);
             }
         } catch (Exception e) {
