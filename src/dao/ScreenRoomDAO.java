@@ -14,7 +14,9 @@ public class ScreenRoomDAO extends DAO {
 
     public ArrayList<ScreenRoom> listScreenRooms() {
         ArrayList<ScreenRoom> result = new ArrayList<>();
-        String sql = "SELECT * FROM tblScreenRoom";
+        String sql = "SELECT sr.ID, sr.roomCode, sr.seatCount, sr.type, c.ID as cinemaID, c.name as cinemaName "
+                + "FROM tblScreenRoom sr "
+                + "JOIN tblCinema c ON sr.cinemaID = c.ID";
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -26,6 +28,11 @@ public class ScreenRoomDAO extends DAO {
                 sr.setRoomCode(rs.getString("roomCode"));
                 sr.setSeatCount(rs.getInt("seatCount"));
                 sr.setType(rs.getString("type"));
+
+                Cinema cinema = new Cinema();
+                cinema.setId(rs.getInt("cinemaID"));
+                cinema.setName(rs.getString("cinemaName"));
+                sr.setCinema(cinema);
 
                 result.add(sr);
             }

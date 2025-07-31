@@ -8,8 +8,8 @@ import dao.ShowtimeDAO;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import model.Movie;
+import model.ScreenRoom;
 import model.Showtime;
-import view.SelectSeatFrm;
 
 /**
  *
@@ -29,23 +29,39 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
 
     public SelectShowtimeFrm(Movie movie) {
         initComponents();
-        this.selectedMovie = movie;
-
-        lblSelectedMovie.setText("Suất chiếu cho phim: " + selectedMovie.getTitle());
+        lblSelectedTitle.setText("Suất chiếu cho phim: " + movie.getTitle());
 
         ShowtimeDAO showtimeDAO = new ShowtimeDAO();
-        this.showtimes = showtimeDAO.searchShowtimesByMovie(selectedMovie.getId());
+        this.showtimes = showtimeDAO.searchShowtimesByMovie(movie.getId());
 
+        populateTable();
+    }
+
+    public SelectShowtimeFrm(ScreenRoom screenRoom) {
+        initComponents();
+        lblSelectedTitle.setText("Suất chiếu tại phòng: " + screenRoom.getRoomCode());
+
+        ShowtimeDAO showtimeDAO = new ShowtimeDAO();
+        this.showtimes = showtimeDAO.searchShowtimesByScreenRoom(screenRoom.getId());
+
+        populateTable();
+    }
+
+    private void populateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Suất chiếu");
-        model.addColumn("Phòng chiếu");
+        model.addColumn("Phim");
         model.addColumn("Giờ chiếu");
         model.addColumn("Giá vé");
 
         for (Showtime st : this.showtimes) {
-            model.addRow(new Object[]{st.getId(), st.getScreenRoom().getRoomCode(), st.getShowTime(), st.getTicketPrice()});
+            model.addRow(new Object[]{
+                st.getId(),
+                st.getMovie().getTitle(), // Hiển thị tên phim
+                st.getShowTime(),
+                st.getTicketPrice()
+            });
         }
-
         tblShowtimes.setModel(model);
     }
 
@@ -58,7 +74,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblSelectedMovie = new javax.swing.JLabel();
+        lblSelectedTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblShowtimes = new javax.swing.JTable();
         btnSelectThisShowtime = new javax.swing.JButton();
@@ -66,7 +82,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        lblSelectedMovie.setText("Select Showtime");
+        lblSelectedTitle.setText("Select Showtime");
 
         tblShowtimes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -103,14 +119,14 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblSelectedMovie)
+                .addComponent(lblSelectedTitle)
                 .addGap(149, 149, 149))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblSelectedMovie)
+                .addComponent(lblSelectedTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
@@ -125,10 +141,8 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
 
     private void btnSelectThisShowtimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectThisShowtimeActionPerformed
         int selectedRow = tblShowtimes.getSelectedRow();
-
         if (selectedRow != -1) {
             Showtime selectedShowtime = this.showtimes.get(selectedRow);
-
             new SelectSeatFrm(selectedShowtime).setVisible(true);
             this.dispose();
         } else {
@@ -175,7 +189,7 @@ public class SelectShowtimeFrm extends javax.swing.JFrame {
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnSelectThisShowtime;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblSelectedMovie;
+    private javax.swing.JLabel lblSelectedTitle;
     private javax.swing.JTable tblShowtimes;
     // End of variables declaration//GEN-END:variables
 }

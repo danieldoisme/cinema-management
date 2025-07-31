@@ -5,34 +5,29 @@
 package view;
 
 import dao.MovieDAO;
+import dao.ScreenRoomDAO;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import model.Movie;
+import model.ScreenRoom;
 
 /**
  *
  * @author danieldoisme
  */
 public class SellTicketFrm extends javax.swing.JFrame {
-    
+
     private ArrayList<Movie> movies;
+    private ArrayList<ScreenRoom> screenRooms;
+    private String currentList = "movies";
 
     /**
      * Creates new form SellTicketFrm
      */
     public SellTicketFrm() {
         initComponents();
-
-        MovieDAO movieDAO = new MovieDAO();
-        ArrayList<Movie> movies = movieDAO.listMovies();
-        this.movies = movieDAO.listMovies();
-
-        DefaultListModel<String> model = new DefaultListModel<>();
-        for (Movie movie : this.movies) {
-            model.addElement(movie.getTitle());
-        }
-
-        listMovies.setModel(model);
+        // Mặc định hiển thị danh sách phim khi khởi tạo
+        listMoviesBtnActionPerformed(null);
     }
 
     /**
@@ -44,31 +39,76 @@ public class SellTicketFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        listMoviesBtn = new javax.swing.JButton();
+        listScreenRoomsBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listMovies = new javax.swing.JList<>();
-        jLabel1 = new javax.swing.JLabel();
+        displayList = new javax.swing.JList<>();
+        lblTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("List Movies");
+        listMoviesBtn.setText("List Movies");
+        listMoviesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listMoviesBtnActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("List Screen Rooms");
+        listScreenRoomsBtn.setText("List Screen Rooms");
+        listMoviesBtn = new javax.swing.JButton();
+        listScreenRoomsBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        displayList = new javax.swing.JList<>();
+        lblTitle = new javax.swing.JLabel();
 
-        listMovies.setModel(new javax.swing.AbstractListModel<String>() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        listMoviesBtn.setText("List Movies");
+        listMoviesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listMoviesBtnActionPerformed(evt);
+            }
+        });
+
+        listScreenRoomsBtn.setText("List Screen Rooms");
+        listScreenRoomsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listScreenRoomsBtnActionPerformed(evt);
+            }
+        });
+
+        displayList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = {};
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        displayList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                displayListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(displayList);
+
+        lblTitle.setText("Movies");
+        listScreenRoomsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listScreenRoomsBtnActionPerformed(evt);
+            }
+        });
+
+        displayList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        listMovies.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        displayList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                listMoviesValueChanged(evt);
+                displayListValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(listMovies);
+        jScrollPane1.setViewportView(displayList);
 
-        jLabel1.setText("Movies");
+        lblTitle.setText("Movies");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -76,16 +116,16 @@ public class SellTicketFrm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addComponent(lblTitle)
                 .addGap(178, 178, 178))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(listMoviesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(listScreenRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -93,10 +133,10 @@ public class SellTicketFrm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(listScreenRoomsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(listMoviesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
+                .addComponent(lblTitle)
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(62, Short.MAX_VALUE))
@@ -105,16 +145,47 @@ public class SellTicketFrm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void listMoviesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listMoviesValueChanged
-        int selectedIndex = listMovies.getSelectedIndex();
-
-        if (selectedIndex != -1) {
-            Movie selectedMovie = this.movies.get(selectedIndex);
-
-            new SelectShowtimeFrm(selectedMovie).setVisible(true);
-            this.dispose();
+    private void displayListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_displayListValueChanged
+        if (!evt.getValueIsAdjusting()) {
+            int selectedIndex = displayList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                if (currentList.equals("movies")) {
+                    Movie selectedMovie = this.movies.get(selectedIndex);
+                    new SelectShowtimeFrm(selectedMovie).setVisible(true);
+                    this.dispose();
+                } else if (currentList.equals("screenRooms")) {
+                    ScreenRoom selectedScreenRoom = this.screenRooms.get(selectedIndex);
+                    // Mở cửa sổ chọn suất chiếu cho phòng đã chọn
+                    new SelectShowtimeFrm(selectedScreenRoom).setVisible(true);
+                    this.dispose();
+                }
+            }
         }
-    }//GEN-LAST:event_listMoviesValueChanged
+    }//GEN-LAST:event_displayListValueChanged
+
+    private void listMoviesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listMoviesBtnActionPerformed
+        currentList = "movies";
+        lblTitle.setText("Movies");
+        MovieDAO movieDAO = new MovieDAO();
+        this.movies = movieDAO.listMovies();
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (Movie movie : this.movies) {
+            model.addElement(movie.getTitle());
+        }
+        displayList.setModel(model);
+    }//GEN-LAST:event_listMoviesBtnActionPerformed
+
+    private void listScreenRoomsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listScreenRoomsBtnActionPerformed
+        currentList = "screenRooms";
+        lblTitle.setText("Screen Rooms");
+        ScreenRoomDAO screenRoomDAO = new ScreenRoomDAO();
+        this.screenRooms = screenRoomDAO.listScreenRooms();
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (ScreenRoom sr : this.screenRooms) {
+            model.addElement(sr.getRoomCode() + " - " + sr.getCinema().getName());
+        }
+        displayList.setModel(model);
+    }//GEN-LAST:event_listScreenRoomsBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,10 +223,10 @@ public class SellTicketFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList<String> displayList;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> listMovies;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JButton listMoviesBtn;
+    private javax.swing.JButton listScreenRoomsBtn;
     // End of variables declaration//GEN-END:variables
 }
